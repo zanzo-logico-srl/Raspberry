@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+</head>
+<script>
+
+    var commandUri = "";
+
+    window.addEventListener("message", (event) => {
+        // console.info('message', event);
+        // { type: 'command', api: api, method: method, request: request }
+        // debugger;
+        if (event && event.data && event.data.type === 'command') {
+            console.log('commandApi', event.data.api);
+            var requestInfo = {
+                method: event.data.method,
+                headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+                body: JSON.stringify(event.data.request)
+            };
+            window.fetch(event.data.api, requestInfo)
+                .then(x => {
+                    return x.json();
+                }).then(y => {
+                    console.log("response", JSON.stringify(y));
+                    window.opener.postMessage({ type: "command", response: y }, "https://areaferrero.logico.srl");
+                    // window.opener.postMessage({ type: "command", response: y }, "http://localhost:49379");
+                    document.getElementById('result').innerText = JSON.stringify(y);
+                    window.setTimeout(() => { window.close(); }, 8 * 1000);
+                    //window.close();
+                });
+        }
+
+    }, false);
+
+    // document.addEventListener("DOMContentLoaded", function () {
+    //     document.getElementById('confirm').addEventListener("click", () => {
+    //         alert('commandUri:' + commandUri);
+    //     }, false);
+    // });
+
+</script>
+
+<body>
+    <div>
+        <p id="text">Attendi il completamento dell'azione</p>
+        <!-- <form id="form" method="POST" action="" target="">
+        </form> -->
+        <!-- <button id="confirm">CONFIRM</button> -->
+        <div style="border: 1px solid black; padding: 5px; height: 80px; color: darkgreen; size: 10px; font-weight: 600;"><i><span id="result" ></span></i></div>
+    </div>
+</body>
+
+</html>

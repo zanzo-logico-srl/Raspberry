@@ -1,0 +1,9 @@
+# ignore folder
+log
+.vscode
+*.backup
+__pycache__
+swipe
+st7735-python
+__thrash__
+
